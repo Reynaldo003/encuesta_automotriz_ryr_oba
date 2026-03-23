@@ -1,0 +1,133 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  color: #16324f;
+  background:
+    linear-gradient(rgba(245, 249, 255, 0.34), rgba(240, 247, 255, 0.5)),
+    url("/bg-encuesta.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: rgba(59, 130, 246, 0.2);
+  color: #0f172a;
+}
+
+.fondo-suave {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(59, 130, 246, 0.12),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at top right,
+      rgba(14, 165, 233, 0.1),
+      transparent 24%
+    ),
+    radial-gradient(
+      circle at bottom center,
+      rgba(56, 189, 248, 0.08),
+      transparent 28%
+    );
+}
+
+.tarjeta-principal {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 25px 70px rgba(15, 23, 42, 0.12),
+    0 8px 30px rgba(15, 23, 42, 0.06);
+}
+
+.tarjeta-suave {
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+}
+
+.boton-primario {
+  background: linear-gradient(135deg, #131e5c, #131e5c);
+  color: white;
+  box-shadow: 0 12px 28px rgba(59, 130, 246, 0.26);
+}
+
+.boton-primario:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 32px rgba(59, 130, 246, 0.32);
+}
+
+.boton-secundario {
+  background: rgba(255, 255, 255, 0.88);
+  color: #0f172a;
+  border: 1px solid rgba(203, 213, 225, 0.95);
+}
+
+.boton-secundario:hover {
+  background: rgba(248, 250, 252, 0.96);
+}
+
+.input-limpio {
+  width: 100%;
+  outline: none;
+  border: none;
+  background: transparent;
+  color: #0f172a;
+}
+
+.input-limpio::placeholder {
+  color: #94a3b8;
+}
+
+.pastilla {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border-radius: 999px;
+  padding: 0.45rem 0.8rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: rgba(239, 246, 255, 0.9);
+  color: #1d4ed8;
+  border: 1px solid rgba(191, 219, 254, 0.95);
+}
+
+.ocultar-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.ocultar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 999px;
+}
+
+@media (max-width: 768px) {
+  body {
+    background-attachment: scroll;
+  }
+}
