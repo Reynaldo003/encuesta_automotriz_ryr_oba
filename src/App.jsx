@@ -1,16 +1,15 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowLeft,
   ArrowRight,
   CheckCircle2,
   MessageSquareText,
-  Search,
   UserRound,
 } from "lucide-react";
 import { asesores, motivos, opcionesCalificacion, pasos } from "./data/surveyData";
 
-const STORAGE_KEY = "encuesta-rr-minimal-v2";
+const STORAGE_KEY = "encuesta-rr-minimal-brand-v1";
 
 const respuestasIniciales = {
   nombre: "",
@@ -25,22 +24,6 @@ const respuestasIniciales = {
 
 function cls(...clases) {
   return clases.filter(Boolean).join(" ");
-}
-
-function normalizarTexto(valor = "") {
-  return valor
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
-}
-
-function obtenerIniciales(nombre = "") {
-  return nombre
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((parte) => parte[0]?.toUpperCase())
-    .join("");
 }
 
 function validarPaso(paso, respuestas) {
@@ -69,12 +52,12 @@ function Encabezado() {
   return (
     <div className="mb-8 text-center sm:mb-10">
       <div className="mb-4 flex justify-center">
-        <span className="inline-flex items-center rounded-full border border-slate-200 bg-white/90 px-3 py-1 text-xs font-medium tracking-wide text-slate-600 shadow-sm">
+        <span className="inline-flex items-center rounded-full border border-[#131E5C]/15 bg-[#131E5C]/5 px-3 py-1 text-xs font-semibold tracking-wide text-[#131E5C]">
           Automotriz R&amp;R
         </span>
       </div>
 
-      <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+      <h1 className="text-3xl font-semibold tracking-tight text-[#131E5C] sm:text-4xl lg:text-5xl">
         Encuesta de experiencia
       </h1>
 
@@ -89,11 +72,11 @@ function Encabezado() {
 function CabeceraPregunta({ paso }) {
   return (
     <div className="mb-6 sm:mb-8">
-      <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-500">
+      <span className="inline-flex items-center rounded-full border border-[#131E5C]/15 bg-[#131E5C]/5 px-3 py-1 text-xs font-semibold text-[#131E5C]">
         {paso.etiqueta}
       </span>
 
-      <h2 className="mt-3 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+      <h2 className="mt-3 text-2xl font-semibold tracking-tight text-[#131E5C] sm:text-3xl lg:text-4xl">
         {paso.titulo}
       </h2>
     </div>
@@ -102,8 +85,8 @@ function CabeceraPregunta({ paso }) {
 
 function PreguntaTexto({ paso, valor, onChange, onEnter }) {
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_10px_30px_-18px_rgba(15,23,42,0.35)] sm:p-5">
-      <div className="mb-3 flex items-center gap-2 text-slate-500">
+    <div className="rounded-2xl border border-[#131E5C]/10 bg-white p-4 shadow-[0_18px_45px_-30px_rgba(19,30,92,0.28)] sm:rounded-3xl sm:p-5 md:p-6">
+      <div className="mb-3 flex items-center gap-2 text-[#131E5C]">
         <UserRound className="h-4 w-4" />
         <span className="text-sm font-medium">Identificación</span>
       </div>
@@ -117,50 +100,35 @@ function PreguntaTexto({ paso, valor, onChange, onEnter }) {
         }}
         placeholder={paso.placeholder}
         autoComplete="off"
-        className="w-full border-0 bg-transparent text-xl font-medium text-slate-900 outline-none placeholder:text-slate-400 sm:text-2xl"
+        className="w-full border-0 bg-transparent text-lg font-medium text-[#131E5C] outline-none placeholder:text-slate-400 sm:text-2xl"
       />
     </div>
   );
 }
 
 function PreguntaAsesor({ valor, onChange }) {
-  const [busqueda, setBusqueda] = useState("");
-
-  const asesoresFiltrados = useMemo(() => {
-    const texto = normalizarTexto(busqueda);
-    if (!texto) return asesores;
-
-    return asesores.filter((asesor) =>
-      normalizarTexto(asesor).includes(texto)
-    );
-  }, [busqueda]);
-
   return (
     <div className="space-y-4">
-      <div className="max-h-[320px] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-2">
-        <div className="grid gap-2 md:grid-cols-3">
-          {asesoresFiltrados.length > 0 ? (
-            asesoresFiltrados.map((asesor) => {
+      <div className="max-h-[420px] overflow-y-auto rounded-2xl border border-[#131E5C]/10 bg-white p-2 shadow-[0_18px_45px_-30px_rgba(19,30,92,0.22)] sm:rounded-3xl sm:p-3">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3">
+          {asesores.length > 0 ? (
+            asesores.map((asesor) => {
               const activo = valor === asesor;
+
               return (
                 <button
                   key={asesor}
                   type="button"
                   onClick={() => onChange(asesor)}
                   className={cls(
-                    "group flex items-center gap-3 rounded-2xl border px-3 py-3 text-left transition",
+                    "flex min-h-[58px] items-center gap-3 rounded-2xl border px-3 py-3 text-left transition sm:min-h-[64px]",
                     activo
-                      ? "border-slate-900 bg-slate-900 text-white shadow-[0_10px_25px_-18px_rgba(15,23,42,0.85)]"
-                      : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
+                      ? "border-[#131E5C] bg-[#131E5C] text-white shadow-[0_14px_30px_-18px_rgba(19,30,92,0.65)]"
+                      : "border-[#131E5C]/10 bg-white text-[#131E5C] hover:border-[#131E5C]/25 hover:bg-[#131E5C]/5"
                   )}
                 >
                   <div className="min-w-0 flex-1">
-                    <p
-                      className={cls(
-                        "truncate text-sm font-medium",
-                        activo ? "text-white" : "text-slate-800"
-                      )}
-                    >
+                    <p className="line-clamp-2 text-sm font-medium leading-5">
                       {asesor}
                     </p>
                   </div>
@@ -173,7 +141,7 @@ function PreguntaAsesor({ valor, onChange }) {
             })
           ) : (
             <div className="px-3 py-8 text-center text-sm text-slate-500">
-              No se encontraron asesores con esa búsqueda.
+              No se encontraron asesores.
             </div>
           )}
         </div>
@@ -184,7 +152,7 @@ function PreguntaAsesor({ valor, onChange }) {
 
 function PreguntaMotivo({ valor, onChange }) {
   return (
-    <div className="grid gap-3 sm:grid-cols-2">
+    <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
       {motivos.map((motivo) => {
         const activo = valor === motivo;
 
@@ -194,17 +162,17 @@ function PreguntaMotivo({ valor, onChange }) {
             type="button"
             onClick={() => onChange(motivo)}
             className={cls(
-              "rounded-2xl border p-4 text-left transition",
+              "rounded-2xl border p-4 text-left transition sm:p-5",
               activo
-                ? "border-slate-900 bg-slate-900 text-white shadow-[0_10px_25px_-18px_rgba(15,23,42,0.85)]"
-                : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
+                ? "border-[#131E5C] bg-[#131E5C] text-white shadow-[0_14px_30px_-18px_rgba(19,30,92,0.65)]"
+                : "border-[#131E5C]/10 bg-white text-[#131E5C] hover:border-[#131E5C]/25 hover:bg-[#131E5C]/5"
             )}
           >
             <div className="flex items-start gap-3">
               <span
                 className={cls(
                   "mt-1 h-2.5 w-2.5 shrink-0 rounded-full",
-                  activo ? "bg-white" : "bg-slate-300"
+                  activo ? "bg-white" : "bg-[#131E5C]/25"
                 )}
               />
               <p className="text-sm font-medium leading-6">{motivo}</p>
@@ -221,7 +189,7 @@ function PreguntaCalificacion({ valor, onChange }) {
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         {opcionesCalificacion.map((opcion) => {
           const activo = valor === opcion.value;
 
@@ -231,13 +199,13 @@ function PreguntaCalificacion({ valor, onChange }) {
               type="button"
               onClick={() => onChange(opcion.value)}
               className={cls(
-                "rounded-2xl border px-4 py-4 text-center transition",
+                "rounded-2xl border px-3 py-4 text-center transition sm:px-4 sm:py-5",
                 activo
-                  ? "border-slate-900 bg-slate-900 text-white shadow-[0_10px_25px_-18px_rgba(15,23,42,0.85)]"
-                  : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
+                  ? "border-[#131E5C] bg-[#131E5C] text-white shadow-[0_14px_30px_-18px_rgba(19,30,92,0.65)]"
+                  : "border-[#131E5C]/10 bg-white text-[#131E5C] hover:border-[#131E5C]/25 hover:bg-[#131E5C]/5"
               )}
             >
-              <div className="text-2xl">{opcion.emoji}</div>
+              <div className="text-2xl sm:text-3xl">{opcion.emoji}</div>
               <div className="mt-2 text-sm font-semibold">{opcion.titulo}</div>
             </button>
           );
@@ -248,12 +216,12 @@ function PreguntaCalificacion({ valor, onChange }) {
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3"
+          className="rounded-2xl border border-[#131E5C]/10 bg-[#131E5C]/5 px-4 py-3"
         >
-          <p className="text-sm font-medium text-slate-800">
+          <p className="text-sm font-medium text-[#131E5C]">
             Seleccionó: {seleccion.titulo}
           </p>
-          <p className="mt-1 text-sm text-slate-500">{seleccion.descripcion}</p>
+          <p className="mt-1 text-sm text-slate-600">{seleccion.descripcion}</p>
         </motion.div>
       )}
     </div>
@@ -262,8 +230,8 @@ function PreguntaCalificacion({ valor, onChange }) {
 
 function PreguntaComentario({ paso, valor, onChange }) {
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_10px_30px_-18px_rgba(15,23,42,0.35)] sm:p-5">
-      <div className="mb-3 flex items-center gap-2 text-slate-500">
+    <div className="rounded-2xl border border-[#131E5C]/10 bg-white p-4 shadow-[0_18px_45px_-30px_rgba(19,30,92,0.28)] sm:rounded-3xl sm:p-5 md:p-6">
+      <div className="mb-3 flex items-center gap-2 text-[#131E5C]">
         <MessageSquareText className="h-4 w-4" />
         <span className="text-sm font-medium">Comentario opcional</span>
       </div>
@@ -273,7 +241,7 @@ function PreguntaComentario({ paso, valor, onChange }) {
         value={valor}
         onChange={(e) => onChange(e.target.value)}
         placeholder={paso.placeholder}
-        className="w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 p-4 text-slate-800 outline-none transition focus:border-slate-300 focus:bg-white"
+        className="w-full resize-none rounded-2xl border border-[#131E5C]/10 bg-white p-4 text-slate-700 outline-none transition focus:border-[#131E5C]/40 focus:ring-4 focus:ring-[#131E5C]/8"
       />
 
       <p className="mt-3 text-sm text-slate-500">
@@ -292,11 +260,11 @@ function PantallaFinal({ respuestas, onRestart }) {
       animate={{ opacity: 1, y: 0 }}
       className="py-2 text-center"
     >
-      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#131E5C]/10 text-[#131E5C]">
         <CheckCircle2 className="h-8 w-8" />
       </div>
 
-      <h2 className="mt-5 text-3xl font-semibold tracking-tight text-slate-900">
+      <h2 className="mt-5 text-3xl font-semibold tracking-tight text-[#131E5C]">
         Gracias por su respuesta
       </h2>
 
@@ -305,39 +273,39 @@ function PantallaFinal({ respuestas, onRestart }) {
         nuestros clientes.
       </p>
 
-      <div className="mx-auto mt-8 grid max-w-3xl gap-3 text-left sm:grid-cols-2">
-        <div className="rounded-2xl border border-slate-200 bg-white p-4">
-          <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
+      <div className="mx-auto mt-8 grid max-w-3xl grid-cols-1 gap-3 text-left sm:grid-cols-2">
+        <div className="rounded-2xl border border-[#131E5C]/10 bg-white p-4">
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#131E5C]/55">
             Cliente
           </p>
-          <p className="mt-2 text-sm font-semibold text-slate-900">
+          <p className="mt-2 text-sm font-semibold text-[#131E5C]">
             {respuestas.nombre || "No indicado"}
           </p>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-4">
-          <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
+        <div className="rounded-2xl border border-[#131E5C]/10 bg-white p-4">
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#131E5C]/55">
             Asesor
           </p>
-          <p className="mt-2 text-sm font-semibold text-slate-900">
+          <p className="mt-2 text-sm font-semibold text-[#131E5C]">
             {respuestas.asesor || "No indicado"}
           </p>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-4">
-          <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
+        <div className="rounded-2xl border border-[#131E5C]/10 bg-white p-4">
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#131E5C]/55">
             Motivo
           </p>
-          <p className="mt-2 text-sm font-semibold text-slate-900">
+          <p className="mt-2 text-sm font-semibold text-[#131E5C]">
             {respuestas.motivo || "No indicado"}
           </p>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-4">
-          <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
+        <div className="rounded-2xl border border-[#131E5C]/10 bg-white p-4">
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#131E5C]/55">
             Satisfacción
           </p>
-          <p className="mt-2 text-sm font-semibold text-slate-900">
+          <p className="mt-2 text-sm font-semibold text-[#131E5C]">
             {satisfaccion?.titulo || "No indicado"}
           </p>
         </div>
@@ -346,7 +314,7 @@ function PantallaFinal({ respuestas, onRestart }) {
       <button
         type="button"
         onClick={onRestart}
-        className="mt-8 inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+        className="mt-8 inline-flex w-full items-center justify-center rounded-2xl border border-[#131E5C] bg-white px-5 py-3 text-sm font-semibold text-[#131E5C] transition hover:bg-[#131E5C] hover:text-white sm:w-auto"
       >
         Responder otra encuesta
       </button>
@@ -528,18 +496,13 @@ export default function App() {
     pasoActual.tipo === "texto" || pasoActual.tipo === "comentario";
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-[-10%] top-[-8%] h-72 w-72 rounded-sm bg-slate-200/60 blur-3xl" />
-        <div className="absolute bottom-[-10%] right-[-8%] h-72 w-72 rounded-sm bg-blue-100/60 blur-3xl" />
-      </div>
-
-      <div className="relative mx-auto flex min-h-screen max-w-7xl items-center justify-center px-4 py-8 sm:px-6">
+    <div className="min-h-screen bg-white">
+      <div className="mx-auto flex min-h-screen w-full max-w-7xl items-center justify-center px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35 }}
-          className="w-full rounded-[18px] border border-white/60 bg-white/85 p-5 shadow-[0_30px_80px_-25px_rgba(15,23,42,0.25)] backdrop-blur-xl sm:p-8 md:p-10"
+          className="w-full rounded-2xl border border-[#131E5C]/10 bg-white p-4 shadow-[0_30px_80px_-25px_rgba(19,30,92,0.14)] sm:rounded-3xl sm:p-6 md:p-8 lg:p-10"
         >
           {finalizada ? (
             <PantallaFinal respuestas={respuestas} onRestart={reiniciarEncuesta} />
@@ -567,10 +530,10 @@ export default function App() {
                   onClick={anterior}
                   disabled={indiceActual === 0 || enviando}
                   className={cls(
-                    "inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold transition",
+                    "inline-flex w-full items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold transition sm:w-auto",
                     indiceActual === 0 || enviando
-                      ? "cursor-not-allowed border border-slate-200 bg-slate-100 text-slate-400"
-                      : "border border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
+                      ? "cursor-not-allowed border border-[#131E5C]/10 bg-slate-100 text-slate-400"
+                      : "border border-[#131E5C]/20 bg-white text-[#131E5C] hover:border-[#131E5C] hover:bg-[#131E5C]/5"
                   )}
                 >
                   <ArrowLeft className="h-4 w-4" />
@@ -585,10 +548,10 @@ export default function App() {
                     }
                     disabled={enviando || !puedeContinuar}
                     className={cls(
-                      "inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3 text-sm font-semibold transition",
+                      "inline-flex w-full items-center justify-center gap-2 rounded-2xl px-6 py-3 text-sm font-semibold transition sm:w-auto",
                       enviando || !puedeContinuar
-                        ? "cursor-not-allowed bg-slate-300 text-white"
-                        : "bg-slate-900 text-white hover:bg-slate-800"
+                        ? "cursor-not-allowed bg-[#131E5C]/45 text-white"
+                        : "bg-[#131E5C] text-white hover:bg-[#0F184A]"
                     )}
                   >
                     {enviando ? (
@@ -606,7 +569,7 @@ export default function App() {
                     )}
                   </button>
                 ) : (
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-500">
+                  <div className="w-full rounded-2xl border border-[#131E5C]/10 bg-[#131E5C]/5 px-4 py-3 text-center text-sm text-[#131E5C] sm:w-auto sm:text-left">
                     Seleccione una opción para continuar automáticamente.
                   </div>
                 )}
