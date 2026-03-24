@@ -8,6 +8,7 @@ import {
   UserRound,
 } from "lucide-react";
 import { asesores, motivos, opcionesCalificacion, pasos } from "./data/surveyData";
+import { crearEncuestaSatisfaccion } from "./lib/encuestasApi";
 import fondo4 from "./assets/fondo4.jpg";
 import fondo3 from "./assets/fondo3.jpg";
 
@@ -204,7 +205,7 @@ function PreguntaCalificacion({ valor, onChange }) {
                 "rounded-2xl border px-3 py-4 text-center transition sm:px-4 sm:py-5",
                 activo
                   ? "border-[#131E5C] bg-[#131E5C] text-white shadow-[0_14px_30px_-18px_rgba(19,30,92,0.65)]"
-                  : "border-[#131E5C]/10  text-white hover:border-[#131E5C]/25 hover:bg-white/15 hover:text-white"
+                  : "border-[#131E5C]/10 text-white hover:border-[#131E5C]/25 hover:bg-white/15 hover:text-white"
               )}
             >
               <div className="text-2xl sm:text-3xl">{opcion.emoji}</div>
@@ -330,6 +331,7 @@ export default function App() {
   const [direccion, setDireccion] = useState(1);
   const [finalizada, setFinalizada] = useState(false);
   const [enviando, setEnviando] = useState(false);
+  const [errorEnvio, setErrorEnvio] = useState("");
 
   const timeoutAvanceRef = useRef(null);
 
@@ -425,23 +427,26 @@ export default function App() {
     setDireccion(1);
     setFinalizada(false);
     setEnviando(false);
+    setErrorEnvio("");
   }
 
   async function finalizarEncuesta() {
-    const payload = {
-      ...respuestas,
-      nombre: respuestas.nombre.trim(),
-      comentario: respuestas.comentario.trim(),
-    };
-
-    console.log("Payload listo para backend:", payload);
+    if (enviando) return;
 
     setEnviando(true);
+    setErrorEnvio("");
 
-    setTimeout(() => {
-      setEnviando(false);
+    try {
+      await crearEncuestaSatisfaccion(respuestas);
       setFinalizada(true);
-    }, 900);
+    } catch (error) {
+      console.error("Error al guardar la encuesta:", error);
+      setErrorEnvio(
+        error.message || "Ocurrió un error al guardar la encuesta."
+      );
+    } finally {
+      setEnviando(false);
+    }
   }
 
   function renderPregunta() {
@@ -493,6 +498,7 @@ export default function App() {
         return null;
     }
   }
+
   function preloadImages(images = []) {
     images.forEach((src) => {
       const img = new Image();
@@ -503,6 +509,7 @@ export default function App() {
   useEffect(() => {
     preloadImages([fondo4]);
   }, []);
+
   const mostrarBotonContinuarManual =
     pasoActual.tipo === "texto" || pasoActual.tipo === "comentario";
 
@@ -514,8 +521,8 @@ export default function App() {
         <div className="absolute bottom-[-12%] right-[-10%] rounded-full bg-white/10 blur-3xl" />
         <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(6,16,45,0.96),rgba(11,31,94,0.92),rgba(7,16,38,0.98))]" />
       </div>
-      <div className="mx-auto flex min-h-screen w-full max-w-7xl items-center justify-center px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
 
+      <div className="mx-auto flex min-h-screen w-full max-w-7xl items-center justify-center px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
@@ -530,7 +537,6 @@ export default function App() {
         >
           <div className="absolute inset-0 bg-[#131e5c]/20" />
           <div className="relative z-10">
-
             {finalizada ? (
               <PantallaFinal respuestas={respuestas} onRestart={reiniciarEncuesta} />
             ) : (
@@ -550,6 +556,12 @@ export default function App() {
                     {renderPregunta()}
                   </motion.div>
                 </AnimatePresence>
+
+                {errorEnvio ? (
+                  <div className="mt-4 rounded-2xl border border-red-300/40 bg-red-500/10 px-4 py-3 text-sm text-white">
+                    {errorEnvio}
+                  </div>
+                ) : null}
 
                 <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <button
@@ -604,7 +616,6 @@ export default function App() {
               </>
             )}
           </div>
-
         </motion.div>
       </div>
     </div>
