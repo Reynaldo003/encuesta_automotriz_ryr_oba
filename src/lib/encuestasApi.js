@@ -15,13 +15,16 @@ export async function crearEncuestaSatisfaccion(respuestas) {
     comentario: respuestas.comentario.trim(),
   };
 
-  const respuesta = await fetch(API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+  const respuesta = await fetch(
+    API_URL + "/api/public/encuestas/satisfaccion/",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     },
-    body: JSON.stringify(payload),
-  });
+  );
 
   let data = null;
 
