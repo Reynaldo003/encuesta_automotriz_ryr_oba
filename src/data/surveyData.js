@@ -3,7 +3,6 @@ export const asesores = [
   "Candy Denisse Marquez Cortes",
   "Delmar Javier Illescas Dominguez",
   "Edgar Jesus Gomez Perez",
-  "Gilberto Torres Arauz",
   "Hector Rodriguez",
   "Idalmy Jimenez Sanchez",
   "Ivan Juarez Ortega",
@@ -15,6 +14,9 @@ export const asesores = [
   "Omar Villiers Mondragon",
   "Ruben Romero Valdes",
   "Veronica Castillo Fuentes",
+  "Carlos Oliveros",
+  "Norma Angélica Reyes",
+  "Francisco Olayo",
 ];
 
 export const motivos = [
